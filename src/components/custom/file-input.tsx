@@ -57,7 +57,7 @@ export default function CustomFileInput({endpoint, cols, refetch}: Props) {
   return (
     <div className="flex flex-col items-center justify-between gap-5 px-5 py-5">
       <h2 className="text-medium">Carga de Contactos</h2>
-      <div className="flex flex-col items-center justify-between gap-2 py-2 border-2 border-dashed dark:border-cover border-cover rounded-md">
+      <div className="flex flex-col items-center justify-between gap-2 py-2 border-2 border-dashed dark:border-muted border-muted rounded-md">
         <Input
           type="file"
           onChange={(e) => {
@@ -74,7 +74,7 @@ export default function CustomFileInput({endpoint, cols, refetch}: Props) {
           }
         </Button>
       </div>
-      <div className="flex flex-col items-center justify-between gap-3 w-full rounded-lg px-3 py-3  border-2 border-dashed border-cover text-sm">
+      <div className="flex flex-col items-center justify-between gap-3 w-full rounded-lg px-3 py-3  border-2 border-dashed border-muted text-sm">
         <ul className="list-disc list-inside">
           <li>El archivo debe ser un XLSX</li>
           <li>El archivo no debe exceder los 5MB</li>

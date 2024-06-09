@@ -74,8 +74,6 @@ export default function ReusableTable({data, cols, showSelection, showActions, r
     []
   )
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-  const [createDialogOpen, setCreateDialogOpen] = React.useState(false);
-  const [editDialogOpen, setEditDialogOpen] = React.useState(false);
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
     pageSize: 5,
@@ -93,11 +91,11 @@ export default function ReusableTable({data, cols, showSelection, showActions, r
         header: ({ column }) => {
           return (
             <div
-              className="flex flex-row items-center justify-start gap-1 ml-2 px-2 w-fit"
+              className="flex flex-row items-center justify-start gap-2 ml-2 px-2 w-fit"
             >
               <span>{col.header}</span>
               <Button
-                className="px-2 text-start h-6 hover:bg-cover"
+                className="px-2 text-start h-6 hover:bg-cover border"
                 variant="ghost"
                 onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
               >
@@ -252,7 +250,7 @@ export default function ReusableTable({data, cols, showSelection, showActions, r
       </div>
       <div className={`rounded-md border dark:border-cover border-cover shadow-lg overflow-hidden w-full h-fit ${className && className}`}>
         <Table className="text-center px-2 overflow-hidden">
-          <TableHeader>
+          <TableHeader className="bg-transparent hover:bg-transparent">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="border-cover">
                 {headerGroup.headers.map((header) => {

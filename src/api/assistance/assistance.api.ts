@@ -11,3 +11,4 @@ export const post = async (data: ICreateAssistant) => {
     return error
   }
 }
+

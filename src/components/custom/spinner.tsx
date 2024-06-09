@@ -18,7 +18,7 @@ export function Spinner({size,color}: Props) {
       <LoaderCircle 
         className='loader' size={size === 'large' ? 30 : size === "normal" ? 23 : size === 'small' ? 15 : 50} 
         // color={theme === "dark" ? "white" : theme === "light" ? "hsl(var(--primary))" : color ? color : "white"}
-        color={color ? `${color}` : theme === "dark" ? "white" : theme === "light" ? "hsl(var(--primary))" : "white"}
+        color={color ? `${color}` : theme === "dark" ? "white" : theme === "light" ? "hsl(var(--muted))" : "white"}
       />
     </div>
   )
