@@ -1,6 +1,7 @@
 import React from 'react'
 import { NavBar } from '../components/nav-bar'
 import { UsersTable } from './components/users-table';
+import { AssistanceTable } from './components/assistance-table';
 
 export default function DashboardPage() {
 
@@ -9,8 +10,9 @@ export default function DashboardPage() {
       <div className="flex w-full h-fit items-center">
         <NavBar />
       </div>
-      <div className='flex items-center justify-center w-full h-full px-10'>
+      <div className='flex flex-col items-center justify-center gap-4 w-full h-full px-10'>
         <UsersTable />
+        <AssistanceTable />
       </div>
     </div>
   )

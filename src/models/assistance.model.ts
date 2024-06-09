@@ -10,7 +10,12 @@ export const AssistanceSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date()
 });
+export const CreateAssistanceSchema = z.object({
+  worker: z.string().trim(),
+  date: z.date(),
+  type: z.enum(['in', 'out']),
+});
 
 export type IAssistance = z.infer<typeof AssistanceSchema>;
 
-export type ICreateAssistant = Pick<IAssistance, 'worker' | 'date' | 'type'>
+export type ICreateAssistant = z.infer<typeof CreateAssistanceSchema>;

@@ -1,12 +1,12 @@
 import api from "@/api/api"
 import { AxiosResponse } from "axios"
 
-export const findByDocument = async (document: string) => {
+export const findByDocument = async (document: string): Promise<AxiosResponse> => {
   try {
     const res = await api.get(`users/doc/${document}`)
     console.log(res)
     return res
-  } catch (error) {
+  } catch (error: any) {
     return error
   }
 }
