@@ -1,44 +1,45 @@
 "use client";
 
-import { authUser } from '@/api/auth/auth.api';
+import { useAuthStore } from '@/stores/user/user.store';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function Form() {
-    
-     const router = useRouter();
+    const router = useRouter();
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [document, setDocument] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const [error, setError] = useState<string | null>(null);
-    
+
+    const login = useAuthStore((state) => state.login); 
+    const error = useAuthStore((state) => state.error); 
+    const user = useAuthStore((state) => state.user); 
+
     const isDocumentValid = /^[0-9]{7,8}$/.test(document);
     const isPasswordValid = password.trim() !== '';
     const isFormValid = isDocumentValid && isPasswordValid;
 
+    useEffect(() => {
+        if (user) {
+            // Redireccionar base a sus roles
+            if (user.access === 'admin') {
+                router.push('/dashboard');
+            } else if (user.access === 'worker') {
+                router.push('/');
+            } else {
+                // rol invalido
+                alert('Rol invalido');
+            }
+        }
+    }, [user, router]);
+
     const handleSubmit = async (event: React.SyntheticEvent) => {
         event.preventDefault();
-        try {
-            const response = await authUser(password, document);
-            const { token, user } = response.data;
-            localStorage.setItem('token', token);
-        // Redireccionar base a sus roles
-        if (user.access === 'admin') {
-        router.push('/dashboard');
-        } else if (user.access === 'worker') {
-        router.push('/');
-        } else {
-        // rol invalido
-        setError('Rol invalido');
-        }   
-          }catch (error: any) {
-            setError(error.message || 'Ocurrio un error al iniciar sesion');
-          }
-        };
+        await login(document, password);
+    };
 
-const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
-};
+    const togglePasswordVisibility = () => {
+        setPasswordVisible(!passwordVisible);
+    };
 
     return (
         <div className='flex flex-row items-center w-full justify-center'>
