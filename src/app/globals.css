@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
+
+.hour-styled {
+  font-family: "Jersey 10", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+  
 
 /* Tamaño del scroll */
 *::-webkit-scrollbar {

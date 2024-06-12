@@ -1,15 +1,21 @@
-import axios, { AxiosError, AxiosResponse } from "axios"
+import { AxiosResponse } from "axios"
 import api from "../api"
 
-const authUser = async (password: string, document: string) => {
+const authUser = async ({ password, doc }: { password: string, doc: string}): Promise<AxiosResponse> => {
   try {
-    const response = await axios.post('https://medieval-danika-breaper03-f5d6aaef.koyeb.app/auth/login', { password, document });
+    const response = await api.post("/auth/login", { password, document: doc });
+    const token = response.data.token
+    const { exp } = JSON.parse(atob(token.split('.')[1]));
+    const secondsRemaining = Math.floor((exp * 1000 - Date.now()) / 1000)
+    const cookieValue = `${token}; expires=${new Date(Date.now() + secondsRemaining * 1000).toUTCString()}; path=/;`;
+    document.cookie = `myqk=${cookieValue}`;
     return response;
   } catch (error: any) {
-    if (error.response && error.response.status === 401) {
-      throw new Error('Credenciales invalidas.'); 
+    const err: any = {
+      status: error.response.data.statusCode,
+      data: error.response.data.message
     }
-    throw new Error('Ocurrio un error al iniciar sesion');
+    return err
   }
 };
 

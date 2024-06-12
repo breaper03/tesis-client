@@ -47,7 +47,7 @@ export const AssistanceCheck = () => {
         className='flex flex-row gap-2 items-center w-full justify-start' 
         variant={"link"} 
         disabled={isLoading}
-        onClick={() => router.push("/dashboard")}
+        onClick={() => router.push("/auth")}
       >
         <span className='text-base font-semibold text-primary'>Panel Administrativo</span>
         <Shield size={16} color='hsl(var(--primary))'/>
