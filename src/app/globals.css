@@ -47,7 +47,7 @@
 
 .input:-internal-autofill-selected {
   background-color: transparent !important;
-  color: inherit !important;
+  color: inherit;
   /* Otros estilos que desees anular o ajustar */
 }
 
