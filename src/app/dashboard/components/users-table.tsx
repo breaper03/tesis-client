@@ -7,7 +7,21 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/custom/spinner'
 import { DialogHeader, DialogFooter } from '@/components/ui/dialog'
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Label } from '@/components/ui/label'
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { Input } from '@/components/ui/input'
@@ -15,6 +29,7 @@ import { SquarePen, Trash2, FileDown, Plus } from 'lucide-react'
 import ReusableTable from '../../../components/custom/reusable-table';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import CustomFileInput from '@/components/custom/file-input'
+import { format } from 'path'
 
 export const UsersTable = () => {
 
@@ -28,8 +43,13 @@ export const UsersTable = () => {
   const getUsers = async () => {
     const { data, status } = await findAllUsers();
     if (status === 200) {
-      console.log("data", data)
-      setUsers(data)
+      const formatData = data.map((user: IUser) => {
+        return {
+          ...user,
+          access: user.access === "admin" ? "Administrador" : "Trabajador",
+        }
+      })
+      setUsers(formatData)
     }
   }
 
@@ -105,19 +125,18 @@ export const UsersTable = () => {
     const handleSubmit = async () => {
       try {
         setIsLoading(true)
-
         const obj: Omit<IUser, "id" | "_id" | "createdAt" | "updatedAt"> = {
           firstname: body.firstname !== "" ? body.firstname : currentUser?.firstname !== undefined ? currentUser.firstname : "",
           lastname: body.lastname !== "" ? body.lastname : currentUser?.lastname !== undefined ? currentUser.lastname : "",
           password: body.password !== "" ? body.password : currentUser?.password !== undefined ? currentUser.password : "",
           document: body.document !== "" ? body.document : currentUser?.document !== undefined ? currentUser.document : "",
-          access: body.access !== "admin" ? body.access : currentUser?.access !== undefined ? currentUser.access : "worker",
+          access: body.access !== undefined ? body.access : currentUser?.access !== undefined ? currentUser.access : "admin"
         }
 
+        
         const valid = CreateUserSchema.safeParse(obj)
-
+        
         if (valid.success) {
-          console.log("obj", obj)
           currentUser?._id && await updateUsers(currentUser?._id, obj)
           await getUsers()
           setIsLoading(false)
@@ -142,7 +161,6 @@ export const UsersTable = () => {
     const handleDelete = async () => {
       setIsLoading(true)
       try {
-        console.log("id", currentUser?._id)
         currentUser && deleteUsers(currentUser?._id)
         await getUsers()
         setDeleteDialogOpen(false)
@@ -210,7 +228,7 @@ export const UsersTable = () => {
                     className={`${bodyErrors.document && "border-red-500"} col-span-3`}
                   />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
+                {/* <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="name" className="text-right">
                     Contraseña
                   </Label>
@@ -220,17 +238,22 @@ export const UsersTable = () => {
                     defaultValue={currentUser?.password}
                     className={`${bodyErrors.password && "border-red-500"} col-span-3`}
                   />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
+                </div> */}
+                <div className="grid grid-cols-4 items-center justify-between gap-4">
                   <Label htmlFor="name" className="text-right">
                     Acceso
                   </Label>
-                  <Input
-                    onChange={(event) => handleOnChange(event.target.name, event.target.value)}
-                    name="access"
-                    defaultValue={currentUser?.access}
-                    className={`${bodyErrors.access && "border-red-500"} col-span-3`}
-                  />
+                  <Select name="access" onValueChange={(value) => handleOnChange("access", value)}>
+                    <SelectTrigger className={`${bodyErrors.access && "border-red-500"} col-span-3 min-w-80`}>
+                      <SelectValue placeholder="Seleccionar Acceso" defaultValue={currentUser?.access}/>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="worker">Trabajador</SelectItem>
+                        <SelectItem value="admin">Administrador</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               <DialogFooter>
@@ -308,7 +331,6 @@ export const UsersTable = () => {
       setIsLoading(true)
       try {
         const valid = CreateUserSchema.safeParse(body)
-        console.log(valid)
         if (valid.success) {
           await addUsers(body)
           await getUsers()
@@ -380,6 +402,7 @@ export const UsersTable = () => {
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
+
               <Label htmlFor="name" className="text-right">
                 Contraseña
               </Label>
@@ -390,16 +413,21 @@ export const UsersTable = () => {
                 className={`${bodyErrors.password && "border-red-500"} col-span-3`}
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center justify-between gap-4">
               <Label htmlFor="name" className="text-right">
                 Acceso
               </Label>
-              <Input
-                onChange={(event) => handleOnChange(event.target.name, event.target.value)}
-                name="access"
-                defaultValue={currentUser?.access}
-                className={`${bodyErrors.access && "border-red-500"} col-span-3`}
-              />
+              <Select name="access" onValueChange={(value) => handleOnChange("access", value)}>
+                <SelectTrigger className="min-w-80">
+                  <SelectValue placeholder="Seleccionar Acceso" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="worker">Trabajador</SelectItem>
+                    <SelectItem value="admin">Administrador</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <DialogFooter>

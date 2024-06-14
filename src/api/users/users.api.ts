@@ -5,7 +5,15 @@ import { AxiosResponse } from "axios"
 export const findByDocument = async (document: string): Promise<AxiosResponse> => {
   try {
     const res = await api.get(`users/doc/${document}`)
-    console.log(res)
+    return res
+  } catch (error: any) {
+    return error
+  }
+}
+
+export const findById = async (id: string): Promise<AxiosResponse> => {
+  try {
+    const res = await api.get(`users/${id}`)
     return res
   } catch (error: any) {
     return error
@@ -33,7 +41,7 @@ export const addUsers = async (body: ICreateUser): Promise<AxiosResponse> => {
 export const updateUsers = async (id: string, body: Omit<IUser, | "_id" | "id" | "createdAt" | "updatedAt">): Promise<AxiosResponse> => {
   try {
     // console.log("hello token", api.defaults.headers.common['Authorization'])
-    console.log(body)
+    console.log("body", body)
     const res = await api.put(`users/${id}`, body, { headers: { Authorization: api.defaults.headers.common['Authorization'] } })
     return res
   } catch (error: any) {

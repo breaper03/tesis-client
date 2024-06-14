@@ -137,43 +137,44 @@ export default function Form() {
     // );
 
     return (
-        <Card className="w-fit min-w-[400px]">
-            <CardHeader>
-                <CardTitle className='text-xl'>Iniciar Sesion</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <form>
-                    <div className="grid w-full items-center gap-4">
-                        <div className="flex flex-col space-y-3">
-                            <Label htmlFor="doc">Cedula de Identidad</Label>
-                            <Input id="doc" placeholder="Cedula de Identidad"  onChange={(e) => handleOnChange("doc", e.target.value)}/>
-                            { formErrors.doc.error && <p className="text-red-500 text-xs">{formErrors.doc.message}</p> }
-                        </div>
-                        <div className="flex flex-col space-y-3">
-                            <Label htmlFor="password">Contraseña</Label>
-                            <div className='flex flex-row items-center justify-between gap-2 w-full h-fit'>
-                                <Input id="password" placeholder="Contraseña" type={passwordVisible ? 'text' : 'password'} onChange={(e) => handleOnChange("password", e.target.value)}/>
-                                <Button size="icon" className='px-2' onClick={() => setPasswordVisible(!passwordVisible)} type='button'>
-                                    {
-                                        passwordVisible ? <Eye size={18} color='white'/> : <EyeOff size={18} color='white'/>
-                                    }
-                                </Button>
-                                
+        <form onSubmit={handleSubmit}>
+            <Card className="w-fit min-w-[400px]">
+                <CardHeader>
+                    <CardTitle className='text-xl'>Iniciar Sesion</CardTitle>
+                </CardHeader>
+                <CardContent>
+                        <div className="grid w-full items-center gap-4">
+                            <div className="flex flex-col space-y-3">
+                                <Label htmlFor="doc">Cedula de Identidad</Label>
+                                <Input id="doc" placeholder="Cedula de Identidad"  onChange={(e) => handleOnChange("doc", e.target.value)}/>
+                                { formErrors.doc.error && <p className="text-red-500 text-xs">{formErrors.doc.message}</p> }
                             </div>
-                            { formErrors.password.error && <p className="text-red-500 text-xs">{formErrors.password.message}</p> }
+                            <div className="flex flex-col space-y-3">
+                                <Label htmlFor="password">Contraseña</Label>
+                                <div className='flex flex-row items-center justify-between gap-2 w-full h-fit'>
+                                    <Input id="password" placeholder="Contraseña" type={passwordVisible ? 'text' : 'password'} onChange={(e) => handleOnChange("password", e.target.value)}/>
+                                    <Button size="icon" className='px-2' onClick={() => setPasswordVisible(!passwordVisible)} type='button'>
+                                        {
+                                            passwordVisible ? <Eye size={18} color='white'/> : <EyeOff size={18} color='white'/>
+                                        }
+                                    </Button>
+                                    
+                                </div>
+                                { formErrors.password.error && <p className="text-red-500 text-xs">{formErrors.password.message}</p> }
+                            </div>
                         </div>
-                    </div>
-                </form>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-                <Button variant="outline">Volver</Button>
-                <Button 
-                    onClick={handleSubmit} className='flex flex-row items-center justify-between gap-1.5 dark:text-white' 
-                    disabled={form.doc.trim() === "" || form.password.trim() === "" || formErrors.doc.error || formErrors.password.error}
-                >
-                    Iniciar Sesion {isLoading &&<Spinner size="small"/>}
-                </Button>
-            </CardFooter>
-        </Card>
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                    <Button type='button' variant="outline" onClickCapture={() => router.push('/')}>Volver</Button>
+                    <Button
+                        type='submit'
+                        onClick={handleSubmit} className='flex flex-row items-center justify-between gap-1.5 dark:text-white' 
+                        disabled={form.doc.trim() === "" || form.password.trim() === "" || formErrors.doc.error || formErrors.password.error}
+                        >
+                        Iniciar Sesion {isLoading &&<Spinner size="small"/>}
+                    </Button>
+                </CardFooter>
+            </Card>
+        </form>
     )
 }
