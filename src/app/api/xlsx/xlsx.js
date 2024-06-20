@@ -1,3 +1,4 @@
+import path from "path";
 import XlsxPopulate from "xlsx-populate";
 
 const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -20,14 +21,16 @@ export async function CreateExcel(cols, data) {
     });
   });
 
+  const filePath = path.join(process.cwd(), "public");
+  console.log(filePath);
   // Guardar el archivo
-  const buffer = await workbook.outputAsync();
-  workbook.toFileAsync("./assets/prueba.xlsx");
+  const blob = await workbook.outputAsync("base64");
+  workbook.toFileAsync(`${filePath}/excel.xlsx`);
 
   // Crear un objeto Blob
-  const blob = new Blob([buffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  });
+  // const blob = new Blob([buffer], {
+  //   type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  // });
 
   return blob;
 }

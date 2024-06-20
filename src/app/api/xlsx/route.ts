@@ -18,8 +18,6 @@ export async function PUT(req: NextRequest) {
       data.get("cols"),
     );
     await rm(filePath);
-    // console.log(`${JSON.stringify(read, null, 2)}`)
-    // return new NextResponse(`${JSON.stringify(read, null, 2)}`);
     return NextResponse.json(read);
   }
 }
@@ -31,6 +29,6 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   console.log("hello fetch");
   const { data, cols } = await req.json();
-  await CreateExcel(cols, data);
-  return new NextResponse("Hello, from API!");
+  const res = await CreateExcel(cols, data);
+  return new NextResponse(res);
 }
