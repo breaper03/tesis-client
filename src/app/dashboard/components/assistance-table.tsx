@@ -27,7 +27,7 @@ type FormattedEntry = z.infer<typeof formatAssitanceSchema>;
 
 export const AssistanceTable = () => {
   const [assistance, setAssistance] = useState<
-    { worker: string; date: string; type: string }[]
+    { worker: string; document:string; date: string; type: string }[]
   >([]);
   const [rowSelection, setRowSelection] = useState({});
 
@@ -43,6 +43,7 @@ export const AssistanceTable = () => {
           const { data } = await findById(el.worker);
           return {
             worker: `${data.firstname} ${data.lastname}`,
+            document: `${data.document}`,
             date: `${format(el.date, "medium")} ${format(el.date, { time: "short" })}`,
             type: el.type === "in" ? "Entrada" : "Salida",
           };
@@ -89,6 +90,7 @@ export const AssistanceTable = () => {
 
   const templateCols = [
     { key: "worker", header: "Nombre y Apellido" },
+    { key: "document", header: "C.I" },
     { key: "date", header: "Fecha" },
     { key: "in", header: "Hora de entrada" },
     { key: "out", header: "Hora de salida" },
@@ -98,7 +100,7 @@ export const AssistanceTable = () => {
     const { data } = await findAllAssistance();
     const table = formatEntries(data);
     const formatData = await Promise.all(
-      table.map(async (el) => {
+      table.map(async (el) => {      
         const { data } = await findById(el.worker);
         return {
           ...el,
@@ -107,9 +109,11 @@ export const AssistanceTable = () => {
           permissions: "#",
           comments: "#",
           worker: `${data.firstname} ${data.lastname}`,
+          document: `${data.document}`,
         };
       }),
     );
+    
 
     const res = await axios.post(
       "api/xlsx",
@@ -133,6 +137,12 @@ export const AssistanceTable = () => {
     {
       key: "worker",
       header: "Trabajador",
+      columnOrdering: true,
+      actions: false,
+    },
+    {
+      key: "document",
+      header: "C.I",
       columnOrdering: true,
       actions: false,
     },
