@@ -1,4 +1,4 @@
-import  z } from 'zod';
+import { z } from 'zod';
 
 export const UserSchema = z.object({
   id: z.string().trim(),
@@ -8,6 +8,7 @@ export const UserSchema = z.object({
   document: z.string().trim().min(7).max(8).regex(/^[0-9]{7,8}$/),
   password: z.string().min(8),
   access: z.enum(['admin', 'worker']),
+  rol: z.enum(['worker', 'administration', 'manager', 'vice-rector', 'labor-union']),
   createdAt: z.date(),
   updatedAt: z.date()
 });
@@ -17,6 +18,7 @@ export const CreateUserSchema = z.object({
   document: z.string().trim().min(7).max(8).regex(/^[0-9]{7,8}$/),
   password: z.string().min(8),
   access: z.enum(['admin', 'worker']),
+  rol: z.enum(['worker', 'administration', 'manager', 'vice-rector', 'labor-union']),
 });
 
 export type IUser = z.infer<typeof UserSchema>;

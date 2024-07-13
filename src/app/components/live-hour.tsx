@@ -23,12 +23,14 @@ export const LiveHour = () => {
     return () => clearInterval(interval)
   }, [])
 
+  const formattedDateTime = format(hour, "h:mm a", "es") 
+
   return (
     <div className="flex flex-col items-center justify-center h-full">
       <span className={cn("font-sans antialiased text-9xl text-primary", fontSans.variable)}>
-        {format(hour, { time: "short" })}
+        {formattedDateTime}
       </span>
-      <Progress value={(hour.getSeconds() / 60) * 100}/>
+      <Progress value={(hour.getSeconds() / 60) * 100} />
     </div>
   )
 }

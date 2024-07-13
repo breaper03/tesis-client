@@ -4,17 +4,14 @@ import React, { useEffect, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
 import ReusableTable from "../../../components/custom/reusable-table";
-import { CreateAssistanceSchema, IAssistance } from "@/models/assistance.model";
+import { IAssistance } from "@/models/assistance.model";
 import {
-  deleteAssistance,
   findAllAssistance,
-  updateAssistance,
 } from "@/api/assistance/assistance.api";
 import { findById } from "@/api/users/users.api";
 import { format } from "@formkit/tempo";
 import { z } from "zod";
 import axios from "axios";
-import { CreateExcel } from "@/api/xlsx/xlsx";
 import { cn } from "@/lib/utils";
 
 const formatAssitanceSchema = z.object({
@@ -27,7 +24,7 @@ type FormattedEntry = z.infer<typeof formatAssitanceSchema>;
 
 export const AssistanceTable = () => {
   const [assistance, setAssistance] = useState<
-    { worker: string; date: string; type: string }[]
+    { worker: string; document: string; date: string; type: string }[]
   >([]);
   const [rowSelection, setRowSelection] = useState({});
 
@@ -43,7 +40,8 @@ export const AssistanceTable = () => {
           const { data } = await findById(el.worker);
           return {
             worker: `${data.firstname} ${data.lastname}`,
-            date: `${format(el.date, "medium")} ${format(el.date, { time: "short" })}`,
+            document: `${data.document}`,
+            date: `${format(el.date, "medium")} ${format(el.date, "h:mm a", "es")}`, 
             type: el.type === "in" ? "Entrada" : "Salida",
           };
         }),
@@ -76,8 +74,8 @@ export const AssistanceTable = () => {
           formattedEntries.push({
             worker: worker,
             date: `${format(entry.date, "long")}`,
-            in: `${format(inEntry.date, { time: "short" })}`,
-            out: `${format(entry.date, { time: "short" })}`,
+            in: `${format(inEntry.date,  "h:mm a", "es")}`,
+            out: `${format(entry.date,  "h:mm a", "es")}`,
           });
           inEntry = undefined; // Reset inEntry for the next pair
         }
@@ -89,9 +87,12 @@ export const AssistanceTable = () => {
 
   const templateCols = [
     { key: "worker", header: "Nombre y Apellido" },
+    { key: "document", header: "C.I" },
     { key: "date", header: "Fecha" },
     { key: "in", header: "Hora de entrada" },
     { key: "out", header: "Hora de salida" },
+    { key: "insjustification", header: "Injustificada" },
+    { key: "observation", header: "Observación" }
   ];
 
   const handleDownloadFile = async () => {
@@ -105,8 +106,10 @@ export const AssistanceTable = () => {
           rest: "#",
           injutifications: "#",
           permissions: "#",
+          observation: "#",
           comments: "#",
           worker: `${data.firstname} ${data.lastname}`,
+          document: `${data.document}`,
         };
       }),
     );
@@ -133,6 +136,12 @@ export const AssistanceTable = () => {
     {
       key: "worker",
       header: "Trabajador",
+      columnOrdering: true,
+      actions: false,
+    },
+    {
+      key: "document",
+      header: "C.I",
       columnOrdering: true,
       actions: false,
     },
