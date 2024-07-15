@@ -36,6 +36,7 @@ export default function Form() {
       message: "",
     },
   });
+  const [errorMessage, setErrorMessage] = useState<string>(""); 
   const FormSchema = z.object({
     doc: z
       .string()
@@ -61,6 +62,7 @@ export default function Form() {
   const handleSubmit = async (event: React.SyntheticEvent): Promise<void> => {
     event.preventDefault();
     setIsLoading(true);
+    setErrorMessage('');
     const isFormValid = FormSchema.safeParse(form);
     if (!isFormValid.success) {
       const { doc, password } = isFormValid.error.format();
@@ -87,13 +89,25 @@ export default function Form() {
           },
         });
       } else {
-        login(data.token, data.user);
-        router.push("/dashboard");
-      }
+        if (data.user.access === 'admin') {
+          login(data.token, data.user);
+          router.push("/dashboard");
+        } else {
+          setErrorMessage('No tiene permisos de administrador.');
+        }
     }
     setIsLoading(false);
   };
+}
+useEffect(() => {
+  if (errorMessage) {
+    const timer = setTimeout(() => {
+      setErrorMessage("");
+    }, 4000);
 
+    return () => clearTimeout(timer); // Limpia el temporizador 
+  }
+}, [errorMessage]);
   return (
     <form onSubmit={handleSubmit}>
       <Card className="w-fit min-w-[400px]">
@@ -165,6 +179,12 @@ export default function Form() {
             Iniciar Sesion {isLoading && <Spinner size="small" />}
           </Button>
         </CardFooter>
+        {errorMessage && (
+          <div className="mt-4 text-red-500 text-center">
+            {errorMessage}
+          </div>
+        )}
+
       </Card>
     </form>
   );
