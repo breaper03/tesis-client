@@ -10,7 +10,7 @@ export default function DashboardPage() {
       <div className="flex w-full h-fit items-center">
         <NavBar />
       </div>
-      <div className='flex flex-col items-center justify-center gap-4 w-full h-full px-10'>
+      <div className='flex flex-col items-center mt-11 justify-center gap-4 w-full h-full px-10'>
         <UsersTable />
         <AssistanceTable />
       </div>

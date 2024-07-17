@@ -47,6 +47,15 @@ export const UsersTable = () => {
         return {
           ...user,
           access: user.access === "admin" ? "Administrador" : "Trabajador",
+          rol: user.rol === "administration"
+          ? "Personal Administrativo"
+          : user.rol === "worker"
+          ? "Personal Obrero"
+          : user.rol === "manager"
+          ? "Gerente"
+          : user.rol === "vice-rector"
+          ? "Personal Vicerrectorado"
+          : "Cargo Desconocido"
         }
       })
       setUsers(formatData)
@@ -58,6 +67,7 @@ export const UsersTable = () => {
     { key: "lastname", header: "Apellido", columnOrdering: true, actions: false },
     { key: "document", header: "C.I", columnOrdering: true, actions: false },
     { key: "access", header: "Acceso", columnOrdering: true, actions: false },
+    { key: "rol", header: "Cargo", columnOrdering: true, actions: false },
   ];
 
   const templateCols = [
@@ -95,14 +105,16 @@ export const UsersTable = () => {
       lastname: "",
       document: "",
       password: "",
-      access: "worker"
+      access: "worker",
+      rol: "manager",
     })
     const [bodyErrors, setBodyErrors] = useState({
       firstname: false,
       lastname: false,
       document: false,
       password: false,
-      access: false
+      access: false,
+      rol: false,
     })
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -130,7 +142,8 @@ export const UsersTable = () => {
           lastname: body.lastname !== "" ? body.lastname : currentUser?.lastname !== undefined ? currentUser.lastname : "",
           password: body.password !== "" ? body.password : currentUser?.password !== undefined ? currentUser.password : "",
           document: body.document !== "" ? body.document : currentUser?.document !== undefined ? currentUser.document : "",
-          access: body.access !== undefined ? body.access : currentUser?.access !== undefined ? currentUser.access : "admin"
+          access: body.access !== undefined ? body.access : currentUser?.access !== undefined ? currentUser.access : "admin",
+          rol: body.rol !== undefined ? body.rol : currentUser?.rol!== undefined ? currentUser.rol : "manager",
         }
 
         
@@ -142,13 +155,14 @@ export const UsersTable = () => {
           setIsLoading(false)
           setEditDialogOpen(false)
         } else {
-          const { firstname, lastname, password, document, access } = valid.error.format()
+          const { firstname, lastname, password, document, access, rol } = valid.error.format()
           setBodyErrors({
             firstname: firstname?._errors ? true : false,
             lastname: lastname?._errors ? true : false,
             password: password?._errors ? true : false,
             document: document?._errors ? true : false,
             access: access?._errors ? true : false,
+            rol: rol?._errors ? true : false,
           })
         }
         setIsLoading(false)
@@ -255,6 +269,24 @@ export const UsersTable = () => {
                     </SelectContent>
                   </Select>
                 </div>
+                <div className="grid grid-cols-4 items-center justify-between gap-4">
+                  <Label htmlFor="name" className="text-right">
+                    Cargo
+                  </Label>
+                  <Select name="rol" onValueChange={(value) => handleOnChange("rol", value)}>
+                    <SelectTrigger className={`${bodyErrors.rol && "border-red-500"} col-span-3 min-w-80`}>
+                      <SelectValue placeholder="Seleccionar Cargo" defaultValue={currentUser?.rol}/>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="manager">Gerente</SelectItem>
+                        <SelectItem value="worker">Personal Obrero</SelectItem>
+                        <SelectItem value="administration">Personal Administrativo</SelectItem>
+                        <SelectItem value="vice-rector">Vicerrectorador</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <DialogFooter>
                 <Button type="submit" variant="outline" className='flex flex-row gap-2 items-center justify-between' onClick={() => handleSubmit()}>
@@ -306,14 +338,16 @@ export const UsersTable = () => {
       lastname: "",
       document: "",
       password: "",
-      access: "worker"
+      access: "worker",
+      rol: "manager",
     })
     const [bodyErrors, setBodyErrors] = useState({
       firstname: false,
       lastname: false,
       document: false,
       password: false,
-      access: false
+      access: false,
+      rol: false
     })
     const [createDialogOpen, setCreateDialogOpen] = useState(false)
 
@@ -337,13 +371,14 @@ export const UsersTable = () => {
           setIsLoading(false)
           setCreateDialogOpen(false)
         } else {
-          const { firstname, lastname, password, document, access } = valid.error.format()
+          const { firstname, lastname, password, document, access, rol } = valid.error.format()
           setBodyErrors({
             firstname: firstname?._errors ? true : false,
             lastname: lastname?._errors ? true : false,
             password: password?._errors ? true : false,
             document: document?._errors ? true : false,
             access: access?._errors ? true : false,
+            rol: rol?._errors ? true : false
           })
           setIsLoading(false)
         }
@@ -429,6 +464,24 @@ export const UsersTable = () => {
                 </SelectContent>
               </Select>
             </div>
+            <div className="grid grid-cols-4 items-center justify-between gap-4">
+                  <Label htmlFor="name" className="text-right">
+                    Cargo
+                  </Label>
+                  <Select name="rol" onValueChange={(value) => handleOnChange("rol", value)}>
+                    <SelectTrigger className={`${bodyErrors.rol && "border-red-500"} col-span-3 min-w-80`}>
+                      <SelectValue placeholder="Seleccionar Cargo" defaultValue={currentUser?.rol}/>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="manager">Gerente</SelectItem>
+                        <SelectItem value="worker">Personal Obrero</SelectItem>
+                        <SelectItem value="administration">Personal Administrativo</SelectItem>
+                        <SelectItem value="vice-rector">Vicerrectorador</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
           </div>
           <DialogFooter>
             <Button className='flex flex-row items-center gap-2 justify-between' variant="outline" type="submit" onClick={() => handleSubmit()}>

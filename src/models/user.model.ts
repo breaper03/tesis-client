@@ -12,7 +12,8 @@ export const UserSchema = z.object({
     .max(8)
     .regex(/^[0-9]{7,8}$/),
   password: z.string().min(8),
-  access: z.enum(["admin", "worker"]),
+  access: z.enum(['admin', 'worker']),
+  rol: z.enum(['manager', 'administration', 'worker', 'vice-rector']),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -26,7 +27,8 @@ export const CreateUserSchema = z.object({
     .max(8)
     .regex(/^[0-9]{7,8}$/),
   password: z.string().min(8),
-  access: z.enum(["admin", "worker"]),
+  access: z.enum(['admin', 'worker']),
+  rol: z.enum(['manager', 'administration', 'worker', 'vice-rector']),
 });
 
 export type IUser = z.infer<typeof UserSchema>;
