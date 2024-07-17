@@ -48,7 +48,7 @@ export const UsersTable = () => {
           ...user,
           access: user.access === "admin" ? "Administrador" : "Trabajador",
           rol: user.rol === "administration" ? "Personal Administrativo"
-         : user.rol === 'worker' ? 'Trabajador Obrero'
+         : user.rol === 'worker' ? 'Personal Obrero'
          : user.rol === 'manager' ? 'Gerente'
          : user.rol === 'vice-rector' ? 'Personal Vicerrectorado'
          : user.rol === 'labor-union' ? 'Personal Sindicato'
@@ -272,7 +272,7 @@ export const UsersTable = () => {
                     <SelectContent>
                       <SelectGroup>
                         <SelectItem value="worker">Personal Obrero</SelectItem>
-                        <SelectItem value="admin">Personal administrativo</SelectItem>
+                        <SelectItem value="administration">Personal administrativo</SelectItem>
                         <SelectItem value="vice-rector">Personal Vicerrectorado</SelectItem>
                         <SelectItem value="labor-union">Personal Sindicato</SelectItem>
                         <SelectItem value="manager">Gerente</SelectItem>
@@ -468,7 +468,7 @@ export const UsersTable = () => {
                     <SelectContent>
                       <SelectGroup>
                         <SelectItem value="worker">Personal Obrero</SelectItem>
-                        <SelectItem value="admin">Personal administrativo</SelectItem>
+                        <SelectItem value="administration">Personal administrativo</SelectItem>
                         <SelectItem value="vice-rector">Personal Vicerrectorado</SelectItem>
                         <SelectItem value="labor-union">Personal Sindicato</SelectItem>
                         <SelectItem value="manager">Gerente</SelectItem>
