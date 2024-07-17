@@ -75,24 +75,25 @@ export default function Form() {
           message: password?._errors ? "La contraseña no es valida." : "",
         },
       });
+      setIsLoading(false);
     } else {
       const { data, status } = await authUser(form);
       if (status !== 201) {
-        console.log(data);
-        const err: string = data.includes("PASSWORD") ? "password" : "doc";
+        console.log("data", data);
         setFormErrors({
           ...formErrors,
-          [err]: {
+          password: {
             error: true,
-            message: `La ${err === "doc" ? "cedula de identidad" : "contraseña"} no es valida.`,
+            message: `Las credendenciales no son validas.`,
           },
         });
+        setIsLoading(false);
       } else {
         login(data.token, data.user);
         router.push("/dashboard");
+        // setIsLoading(false);
       }
     }
-    setIsLoading(false);
   };
 
   return (
@@ -170,4 +171,3 @@ export default function Form() {
     </form>
   );
 }
-
