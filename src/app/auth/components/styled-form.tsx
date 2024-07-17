@@ -36,7 +36,7 @@ export default function Form() {
       message: "",
     },
   });
-  const [errorMessage, setErrorMessage] = useState<string>(""); 
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const FormSchema = z.object({
     doc: z
       .string()
@@ -62,7 +62,7 @@ export default function Form() {
   const handleSubmit = async (event: React.SyntheticEvent): Promise<void> => {
     event.preventDefault();
     setIsLoading(true);
-    setErrorMessage('');
+    setErrorMessage("");
     const isFormValid = FormSchema.safeParse(form);
     if (!isFormValid.success) {
       const { doc, password } = isFormValid.error.format();
@@ -76,38 +76,36 @@ export default function Form() {
           message: password?._errors ? "La contraseña no es valida." : "",
         },
       });
+      setIsLoading(false);
     } else {
       const { data, status } = await authUser(form);
       if (status !== 201) {
-        console.log(data);
-        const err: string = data.includes("PASSWORD") ? "password" : "doc";
+        console.log("data", data);
         setFormErrors({
           ...formErrors,
-          [err]: {
+          password: {
             error: true,
-            message: `La ${err === "doc" ? "cedula de identidad" : "contraseña"} no es valida.`,
+            message: `Las credendenciales no son validas.`,
           },
         });
+        setIsLoading(false);
       } else {
-        if (data.user.access === 'admin') {
-          login(data.token, data.user);
-          router.push("/dashboard");
-        } else {
-          setErrorMessage('No tiene permisos de administrador.');
-        }
+        login(data.token, data.user);
+        router.push("/dashboard");
+        // setIsLoading(false);
+      }
     }
-    setIsLoading(false);
   };
-}
-useEffect(() => {
-  if (errorMessage) {
-    const timer = setTimeout(() => {
-      setErrorMessage("");
-    }, 4000);
+  
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage("");
+      }, 4000);
 
-    return () => clearTimeout(timer); // Limpia el temporizador 
-  }
-}, [errorMessage]);
+      return () => clearTimeout(timer); // Limpia el temporizador
+    }
+  }, [errorMessage]);
   return (
     <form onSubmit={handleSubmit}>
       <Card className="w-fit min-w-[400px]">
@@ -180,13 +178,9 @@ useEffect(() => {
           </Button>
         </CardFooter>
         {errorMessage && (
-          <div className="mt-4 text-red-500 text-center">
-            {errorMessage}
-          </div>
+          <div className="mt-4 text-red-500 text-center">{errorMessage}</div>
         )}
-
       </Card>
     </form>
   );
 }
-

@@ -1,18 +1,17 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
 import ReusableTable from "../../../components/custom/reusable-table";
 import { IAssistance } from "@/models/assistance.model";
-import {
-  findAllAssistance,
-} from "@/api/assistance/assistance.api";
+import { findAllAssistance } from "@/api/assistance/assistance.api";
 import { findById } from "@/api/users/users.api";
 import { format } from "@formkit/tempo";
 import { z } from "zod";
 import axios from "axios";
 import { cn } from "@/lib/utils";
+import { Spinner } from "@/components/custom/spinner";
 
 const formatAssitanceSchema = z.object({
   worker: z.string(),
@@ -27,7 +26,7 @@ export const AssistanceTable = () => {
     { worker: string; document: string; date: string; type: string }[]
   >([]);
   const [rowSelection, setRowSelection] = useState({});
-
+  const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     getAssistance();
   }, []);
@@ -41,7 +40,7 @@ export const AssistanceTable = () => {
           return {
             worker: `${data.firstname} ${data.lastname}`,
             document: `${data.document}`,
-            date: `${format(el.date, "medium")} ${format(el.date, "h:mm a", "es")}`, 
+            date: `${format(el.date, "medium")} ${format(el.date, { time: "short" })}`,
             type: el.type === "in" ? "Entrada" : "Salida",
           };
         }),
@@ -179,7 +178,9 @@ export const AssistanceTable = () => {
     return <></>;
   };
 
-  return (
+  return loading ? (
+    <Spinner size="large" color="hsl(var(--primary))" />
+  ) : (
     <ReusableTable
       data={assistance}
       cols={cols}
